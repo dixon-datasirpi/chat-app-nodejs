@@ -1,0 +1,22 @@
+{
+  "name": "chat-app-nodejs",
+  "version": "1.0.0",
+  "description": "its a server for chat-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dixon",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.3",
+    "multer": "^1.4.3",
+    "socket.io": "^3.0.5"
+  }
+}
