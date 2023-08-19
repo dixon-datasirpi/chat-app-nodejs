@@ -14,7 +14,7 @@ const messageSchema = new Schema({
     },
     assignedTo: {
         type: Schema.Types.ObjectId,
-        ref: "rooms",
+        ref: "Rooms",
         required: true,
     },
     timestamp: {
@@ -48,3 +48,7 @@ exports.getMessagesWithPopulateUser = function () {
     return Messages.find().populate("users");
 };
 
+exports.getMessagesByIds = function(messageId) {
+    messageId = mongoose.Types.ObjectId(messageId);
+    return Messages.findById(messageId).lean();
+} 

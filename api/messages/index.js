@@ -14,5 +14,4 @@ router.get('/list', async (req, res) => {
     return res.status(status).send({ message, data });
 });
 
-
 module.exports = {router};

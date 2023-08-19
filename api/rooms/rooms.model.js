@@ -6,7 +6,7 @@ const RoomSchema = new Schema ({
   messages: [
     {
       type: Schema.Types.ObjectId,
-      ref: "messages",
+      ref: "Messages",
     },
   ],
   users: [
@@ -53,5 +53,5 @@ exports.createRoomForGroup = function (users, userId) {
 }
 
 exports.getRoomsById = function(id) {
-    return Rooms.findById(id);
+    return Rooms.findById(id).populate('Messages')
 }

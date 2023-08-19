@@ -1,5 +1,6 @@
 
 const Room = require("./rooms.model");
+const Message = require("../messages/messeges.model")
 
 exports.createRoom = async (users) => {
     const isDuplicatedUser = !!([...new Set(users)].length);
@@ -7,13 +8,11 @@ exports.createRoom = async (users) => {
         return [400, "same user cannot be in a room", {}];
     }
     const isRoomsAlreadyExists = (await Room.getRoomsByQuery({ users: { $in: users } }).length);
-    console.log(isRoomsAlreadyExists);
     if(isRoomsAlreadyExists) {
         return [400, 'Room already exists', {}];
     }
-  
     const room = await Room.create(users);
-    return[200, "Room created sucsessfully", {}];
+    return[200, "Room created sucsessfully", room];
 }
 
 exports.get = async (userId) => {
@@ -25,11 +24,17 @@ exports.get = async (userId) => {
 }
 
 exports.getRoomById = async (id) => {
-    const room = await Room.getRoomById(id);
+    const room = await Room.getRoomsById(id);
+    const messages = [];
+    const messageIds = room.messages;
+    for (const element of messageIds) {
+        const mess = await Message.getMessagesByIds(element);
+        messages.push(mess);
+    }
     if(!room) {
         return [404, "Room not found", {}];
     }
-    return [200, "Room fetched successfully", room];
+    return [200, "Room fetched successfully", {room, messages}];
 }
 
 exports.createRoomForGroup = async (userId, users) => {

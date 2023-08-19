@@ -9,7 +9,6 @@ exports.creatMessaage = async (body) => {
     })
     const room = await Room.getRoomsById(assignedTo);
     await room.messages.push(newMessage);
-
     await room.save();
 
     return [200, "Message created sucessfully", newMessage]
