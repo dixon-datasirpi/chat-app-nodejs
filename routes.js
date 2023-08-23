@@ -6,11 +6,12 @@ router.get('/', (req, res) => res.status(200).send());
 
 const user = require("./api/users")
 const message = require("./api/messages")
-const room = require('./api/rooms')
+const room = require('./api/rooms');
+const {authenticate} = require('./authenticater')
 
 
-router.use('/message', message.router);
-router.use('/user',  user.router);
-router.use('/room', room.router);
+router.use('/message', authenticate, message.router);
+// router.use('/user', authenticate, user.router);
+router.use('/room', authenticate, room.router);
 
 module.exports = router;

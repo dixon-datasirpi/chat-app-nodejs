@@ -5,12 +5,7 @@ const messages = require("./messages.controller");
 
 
 router.post('/', async (req, res) => {
-    const [status, message, data] = await messages.creatMessaage(req.body);
-    return res.status(status).send({ message, data });
-});
-
-router.get('/list', async (req, res) => {
-    const [status, message, data] = await messages.get();
+    const [status, message, data] = await messages.creatMessaage(req.user, req.body);
     return res.status(status).send({ message, data });
 });
 

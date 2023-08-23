@@ -10,11 +10,13 @@ const messageSchema = new Schema({
     user: {
         type: String,
         required: true,
-        ref: "users",
     },
     assignedTo: {
-        type: Schema.Types.ObjectId,
-        ref: "Rooms",
+        type: String,
+        required: true,
+    },
+    senderName: {
+        type: String,
         required: true,
     },
     timestamp: {
@@ -32,23 +34,16 @@ const messageSchema = new Schema({
     }
 });
 
-
-//   messageSchema.plugin(timestamps);
 const Messages = mongoose.model(
     'Messages',
     messageSchema,
     'messages'
 );
 
-exports.createmessage = function (message) {
-    return Messages.create(message);
+exports.createmessage = function (payload) {
+    return Messages.create(payload);
 };
 
-exports.getMessagesWithPopulateUser = function () {
-    return Messages.find().populate("users");
-};
-
-exports.getMessagesByIds = function(messageId) {
-    messageId = mongoose.Types.ObjectId(messageId);
-    return Messages.findById(messageId).lean();
-} 
+exports.getMessagesByRoomId = function (alertId, limit = 10, page = 0) {
+    return Messages.find({assignedTo: alertId}).skip(limit * page).sort({ createdAt: -1 }).limit(10).lean();
+}

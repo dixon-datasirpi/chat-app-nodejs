@@ -1,50 +1,32 @@
 
 const Room = require("./rooms.model");
 const Message = require("../messages/messeges.model")
+const keycloakService = require('../../services/keyClaokService')
 
-exports.createRoom = async (users) => {
-    const isDuplicatedUser = !!([...new Set(users)].length);
-    if (!isDuplicatedUser) {
-        return [400, "same user cannot be in a room", {}];
+exports.getRoomByAlertId = async (user, alertId, token) => {
+    const room = await Room.getRoomByAlertId(alertId);
+    if (!room) {
+        let userDetails = await keycloakService.getUsersFromKeyCloak(token);
+        userDetails = userDetails.payload.map(_ => _.id)
+        if(!userDetails.length) {
+          return [400, "No users found in keyCloak", {}];
+        }
+        const roomPayload = {
+            alertId: alertId,
+            users: userDetails,
+            createdBy: user.userId
+        }
+        const createdRoom = await Room.create(roomPayload);
+        return [200, "New room created successFully", createdRoom]
     }
-    const isRoomsAlreadyExists = (await Room.getRoomsByQuery({ users: { $in: users } }).length);
-    if(isRoomsAlreadyExists) {
-        return [400, 'Room already exists', {}];
+    const isAvailableUser = !!(room.users.find(_ => (_ === user.userId)));
+    if(!isAvailableUser) {
+        [400, "you are not supposed to be here", {}];
     }
-    const room = await Room.create(users);
-    return[200, "Room created sucsessfully", room];
-}
-
-exports.get = async (userId) => {
-    const roomLists = await Room.getRoomsByUserId(userId);
-    if (!roomLists.length) {
-        return [400, "No rooms found", {}];
+    const roomMessages = await Message.getMessagesByRoomId(alertId);
+    const reponseData = { 
+        room: room,
+        messages: roomMessages
     }
-    return [200, "Rooms fetched successfully", roomLists];
-}
-
-exports.getRoomById = async (id) => {
-    const room = await Room.getRoomsById(id);
-    const messages = [];
-    const messageIds = room.messages;
-    for (const element of messageIds) {
-        const mess = await Message.getMessagesByIds(element);
-        messages.push(mess);
-    }
-    if(!room) {
-        return [404, "Room not found", {}];
-    }
-    return [200, "Room fetched successfully", {room, messages}];
-}
-
-exports.createRoomForGroup = async (userId, users) => {
-    let userIds = [];
-    userIds = users;
-    userIds.push(userId);
-    const isGroupAlreadyExists = !!(await Room.getRoomsByQuery({users: {$in: userIds}, createdBy: userId}).length)   
-    if(isGroupAlreadyExists) {
-        return [400, "Same group already exists", {}];
-    }
-    const room = await Room.createRoomForGroup(userIds, userId);
-    return [200, "Group chat created successfully", room];
+   return [200, "room and messages fetched successfully", reponseData]
 }

@@ -10,7 +10,7 @@ const express = require('express');
 const http = require('http');
 const routes = require('./routes');
 const socketio = require('socket.io')
-
+const cors = require('cors');
 
 const app = express();
 const db = require('./database.connection');
@@ -23,6 +23,8 @@ const io = new socketio.Server(server);
 
 app.use(express.json()); // For parsing JSON data
 app.use(express.urlencoded({ extended: true })); 
+
+app.use(cors());
 
 app.use('/', routes);
 

@@ -3,6 +3,10 @@ const { Schema, Document, model } = mongoose;
 
 
 const RoomSchema = new Schema ({
+  alertId: {
+    type: String,
+    required: true
+  },
   messages: [
     {
       type: Schema.Types.ObjectId,
@@ -13,16 +17,16 @@ const RoomSchema = new Schema ({
     {
      type: String,
       // ref: "users",
-      required: true,
+      // required: true,
     },
   ],
-  unreadMessages: [
-    {
-      type: Schema.Types.ObjectId,
-      // ref: "users",
-      required: false,
-    },
-  ],
+  // unreadMessages: [
+  //   {
+  //     type: Schema.Types.ObjectId,
+  //     // ref: "users",
+  //     required: false,
+  //   },
+  // ],
   createdBy: {
     type: String,
       // ref: "users",
@@ -36,22 +40,14 @@ const Rooms = mongoose.model(
     'rooms'
 );
 
-exports.create = function (users) {
-    return Rooms.create({users});
+exports.create = function (payload) {
+    return Rooms.create(payload);
 };
 
-exports.getRoomsByUserId = function (userId) {
-    return Rooms.find({ users: {$all:userId} });
+exports.getRoomByAlertId = function (alertId) {
+  return Rooms.findOne({ alertId: alertId});
 };
 
-exports.getRoomsByQuery = function (query) {
-    return Rooms.find(query);
-};
-
-exports.createRoomForGroup = function (users, userId) {
-    return Rooms.create({ users: users, createdBy: userId})
-}
-
-exports.getRoomsById = function(id) {
+exports.getRoomById = function(id) {
     return Rooms.findById(id).populate('Messages')
 }
