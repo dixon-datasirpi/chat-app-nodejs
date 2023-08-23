@@ -44,6 +44,10 @@ exports.createmessage = function (payload) {
     return Messages.create(payload);
 };
 
-exports.getMessagesByRoomId = function (alertId, limit = 10, page = 0) {
-    return Messages.find({assignedTo: alertId}).skip(limit * page).sort({ createdAt: -1 }).limit(10).lean();
+// exports.getMessagesByRoomId = function (alertId, limit = 10, page = 0) {
+//     return Messages.find({assignedTo: alertId}).skip(limit * page).sort({ createdAt: -1 }).limit(10).lean();
+// }
+
+exports.getMessagesByRoomId = function (alertId) {
+    return Messages.find({assignedTo: alertId}).sort({ createdAt: -1 }).lean();
 }

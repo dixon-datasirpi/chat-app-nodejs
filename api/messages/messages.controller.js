@@ -17,6 +17,5 @@ exports.creatMessaage = async (user, body) => {
 
   await room.messages.push(newMessage);
   await room.save();
-
   return [200, "Message created sucessfully", newMessage]
 }
