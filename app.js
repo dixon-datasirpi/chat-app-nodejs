@@ -21,8 +21,9 @@ db.connect(MONGO_URL);
 const server = http.createServer(app)
 const io = new socketio.Server(server);
 
+
 app.use(express.json()); // For parsing JSON data
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
@@ -33,10 +34,10 @@ app.use('*', (req, res) => {
 });
 
 // if (require.main === module) {
-    const PORT = process.env.PORT || 8080
-    server.listen(PORT, () => { console.log("🔥 Server Running on port " + PORT) })
+const PORT = process.env.PORT || 8080
+server.listen(PORT, () => { console.log("🔥 Server Running on port " + PORT) })
 // } else {
-    module.exports = {app, io};
+module.exports = { app, io };
 // }
 
 // Graceful Shutdown
