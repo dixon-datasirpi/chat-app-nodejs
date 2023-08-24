@@ -1,110 +1,27 @@
-import { io } from "../app"
-// // import { Socket } from 'socket.io'
-// import { UnreadMessages } from "../models/UnreadMessages"
+// import { io } from "../app"
+// // // import { Socket } from 'socket.io'
+// // import { UnreadMessages } from "../models/UnreadMessages"
 
-const socket = require('socket.io')
-
-// // import { Messages } from "../models/Message"
-// // import { User } from "../models/Users"
-// // import { Room } from "../models/Room"
+// const Room = require("./api/rooms/rooms.model")
 
 // io.on('connection', (socket) => {
 //   console.log('A new user has been connected: ', socket.id)
 
-// socket.io("message", () => {
-//   console.log("trigge");
-//   io.emit("message", "test")
-// })
+//   socket.on('joinGroup', (data) => {
+//     io.to(data.alertId)
+//     // Store the mapping of group name or user ID to socket ID
+//   });
 
+//   socket.on('sendMessage', async ({ messageData, room }) => {
 
-//   socket.on('joinroom', ({rooms}) => {
-//     rooms.forEach((item) => {
-//      socket.join(item)
-//     })
-//   })
-
-//   socket.on('joinNewRoom', async ({user_target, user, check, room_id}) =>{
-//     socket.join(user_target)    
-
-//     if(!check){
-//       const updatedRoom = await Room.findById(room_id)
-//         .populate(['users', "messages"])
-
-//       console.log(updatedRoom)
-//       const user_data = await User.findById(user)
-
-//       const formattedRoom = {
-//         _id: updatedRoom._id,
-//         messages: updatedRoom.messages,
-//         user: [user_data],
-//         unreadMessages: 0
-//       }
-//       io.to(user_target).emit('receiveJoinNewRoom', 
-//         { user, room: formattedRoom })
-//     }
-//   })
-
-//   socket.on('removeRoom', ({ user_target, user, room, check }) => {
-//     if(!check){
-//       io.to(user_target).emit('receiveRemoveRoom', { user, room })
-//       socket.leave(user_target)
-//     } else {
-//       socket.leave(user_target)
-//     }
-    
-//   })
-
-//   socket.on('viewUnreadMessages', async({ user, room }) => {
-//     await UnreadMessages.deleteMany({ to: room, user: { $nin:user } })
-//     await Messages.updateMany(
-//       { viewed: false, user: { $nin:user }, to: room }, {"$set":{"viewed": true}})
-
-//     io.to(user).emit('receiveReadMessages', { room, user })
-//   })
-
-//   socket.on('writting', ({ to, writting, room }) => {
-//     io.to(to).emit('receiveWritting', { writting, room, to })
-//   })
-
-//   socket.on('imOnline', async({ user, status, room }) => {
-//     if(status){
-//       await User.findByIdAndUpdate(user, { isOnline: true })
-//     } else {
-//       await User.findByIdAndUpdate(user, { isOnline: false })
-//     }
-//     io.to(user).emit('receiveImOnline', { user, status, room })
-//   })
-
-//   socket.on('disconnect', () =>{
-//     console.log('A user has been disconnected')
-//   })
-
-//   socket.on('sendMessage', async ({messageData, room}) => {
-//     const unreadMessages = await UnreadMessages.create({
-//       user: messageData.user,
-//       message: messageData,
-//       to: messageData.assignedTo
-//     })
-//     io.to(room).emit('newMessage', {messageData, unreadMessages})
+//     const roomData = await Room.getRoomByAlertId(messageData.assignedTo);
+//     const newMessage = await Messages.createmessage(messageData);
+   
+//     await roomData.messages.push(newMessage);
+//     await roomData.save();
+//     io.to(room).emit('newMessage', { newMessage })
 //   })
 // })
 
-io.on('connection', (socket) => {
-  console.log('A user connected.');
 
-  socket.on('joinGroup', (groupId) => {
-    // Join the specified group room
-    socket.join(groupId);
-  });
 
-  socket.on('chatMessage', (data) => {
-    // Save the message to the database
-
-    // Emit the message to all users in the group
-    io.to(data.groupId).emit('message', data);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('A user disconnected.');
-  });
-});
