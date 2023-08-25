@@ -16,7 +16,7 @@ exports.authenticate = (req, res, next) => {
       organizations: valuesNode.organizations,
       name: valuesNode.name,
       email: valuesNode.email,
-      userId: valuesNode.sid
+      userId: valuesNode.sub
     }
     next();
   } catch (err) {

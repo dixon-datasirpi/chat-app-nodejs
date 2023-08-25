@@ -1,27 +1,41 @@
-// import { io } from "../app"
-// // // import { Socket } from 'socket.io'
-// // import { UnreadMessages } from "../models/UnreadMessages"
+const socketIo = require('socket.io');
 
-// const Room = require("./api/rooms/rooms.model")
+const Room = require("../api/rooms/rooms.model");
+const Messages = require("../api/messages/messeges.model")
 
-// io.on('connection', (socket) => {
-//   console.log('A new user has been connected: ', socket.id)
+let io;
+function initialize(server) {
 
-//   socket.on('joinGroup', (data) => {
-//     io.to(data.alertId)
-//     // Store the mapping of group name or user ID to socket ID
-//   });
+    io = new socketIo.Server(server);
 
-//   socket.on('sendMessage', async ({ messageData, room }) => {
+    io.on('connection', (socket) => {
+        console.log('A new user has been connected: ', socket.id)
 
-//     const roomData = await Room.getRoomByAlertId(messageData.assignedTo);
-//     const newMessage = await Messages.createmessage(messageData);
-   
-//     await roomData.messages.push(newMessage);
-//     await roomData.save();
-//     io.to(room).emit('newMessage', { newMessage })
-//   })
-// })
+        socket.on('joinGroup', (data) => {
+            console.log("joining group", data.alertId);
+            socket.join(data.alertId)
+            // Store the mapping of group name or user ID to socket ID
+        });
+
+        // socket.on('sendMessage', async ({ messageData, room }) => {
+        //     const roomData = await Room.getRoomByAlertId(messageData.assignedTo);
+        //     const newMessage = await Messages.createmessage(messageData)
+        //     await roomData.messages.push(newMessage);
+        //     await roomData.save();
+        //     const roomMessages = await Messages.getMessagesByRoomId(room);
+        //     const reponseData = {
+        //         room: room,
+        //         messages: roomMessages
+        //     }
+        //     io.emit('newMessage', reponseData)
+        // })
+    })
+    return io;
+}
+
+function emitNewMessage() {
+    return io;
+}
 
 
-
+module.exports = { initialize, emitNewMessage };
