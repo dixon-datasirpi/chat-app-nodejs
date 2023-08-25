@@ -4,7 +4,6 @@ const Room = require('../rooms/rooms.model')
 const socket = require('../../socket-config/socket.config');
 
 exports.creatMessaage = async (user, body) => {
-  console.log(user);
   const room = await Room.getRoomByAlertId(body.assignedTo);
   if (!room) {
     return [404, "Room  not available", {}]
